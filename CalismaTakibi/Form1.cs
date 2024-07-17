@@ -148,6 +148,14 @@ namespace CalismaTakibi
             RefreshSonuclar();
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            FormEdit formEdit = new FormEdit();
+            formEdit.Owner = this;
+            formEdit.Show();
+            this.Hide();
+        }
+
         // Tabloya yeni veriler ekler veya günceller.
         private void buttonAdd_Click(object sender, EventArgs e)
         {
