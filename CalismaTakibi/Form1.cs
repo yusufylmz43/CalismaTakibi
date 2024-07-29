@@ -48,7 +48,8 @@ namespace CalismaTakibi
         //Combo Box'a, veritabanından çekilen kategorilerle item ekler.
         public void RefreshComboBoxKategoriler()
         {
-            SqlCommand verileriGetir = new SqlCommand("SELECT gorevID, gorevCat, gorevName, gorevDiff FROM gorevTable", SqlBaglanti.connection);
+            comboBoxKategoriler.Items.Clear();
+            SqlCommand verileriGetir = new SqlCommand("SELECT gorevID, gorevCat, gorevName, gorevDiff FROM gorevTable ORDER BY gorevCat", SqlBaglanti.connection);
             SqlBaglanti.CheckConnection (SqlBaglanti.connection);
 
             SqlDataReader reader = verileriGetir.ExecuteReader();
