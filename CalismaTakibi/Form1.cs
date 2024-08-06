@@ -43,6 +43,8 @@ namespace CalismaTakibi
             DataTable dt = new DataTable();
             adapter.Fill(dt);
             dataGridViewYapilanlar.DataSource = dt;
+            dataGridViewYapilanlar.AllowUserToResizeRows = false;
+            dataGridViewYapilanlar.AllowUserToResizeColumns = false;
         }
 
         //Combo Box'a, veritabanından çekilen kategorilerle item ekler.
