@@ -26,7 +26,7 @@ namespace CalismaTakibi
         {
             InitializeComponent();
             RefreshYapilanlarTable();
-            RefreshComboBoxKategoriler();
+            RefreshComboBoxCat_Cal();
             RefreshSonuclar();
         }
 
@@ -48,23 +48,29 @@ namespace CalismaTakibi
         }
 
         //Combo Box'a, veritabanından çekilen kategorilerle item ekler.
-        public void RefreshComboBoxKategoriler()
+        public void RefreshComboBoxCat_Cal()
         {
-            comboBoxKategoriler.Items.Clear();
-            SqlCommand verileriGetir = new SqlCommand("SELECT gorevID, gorevCat, gorevName, gorevDiff FROM gorevTable ORDER BY gorevCat", SqlBaglanti.connection);
+            comboBoxCat.Items.Clear();
+
+            SqlCommand verileriGetirYap = new SqlCommand("SELECT gorevID, gorevCat, gorevName, gorevDiff FROM gorevTable ORDER BY gorevCat", SqlBaglanti.connection);
             SqlBaglanti.CheckConnection (SqlBaglanti.connection);
 
-            SqlDataReader reader = verileriGetir.ExecuteReader();
+            SqlDataReader reader = verileriGetirYap.ExecuteReader();
             while (reader.Read())
             {
-                _gorevID = reader.GetInt32(reader.GetOrdinal("gorevID"));
-                _gorevCat = reader.GetString(reader.GetOrdinal("gorevCat"));
-                _gorevName = reader.GetString(reader.GetOrdinal("gorevName"));
-                _gorevDiff = float.Parse(reader["gorevDiff"].ToString(), turkishCulture);
-                comboBoxKategoriler.Items.Add(new Gorevler { GorevID = _gorevID, GorevCat = _gorevCat, GorevName = _gorevName, GorevDiff = _gorevDiff });
+                string gorevCat = reader.GetString(reader.GetOrdinal("gorevCat"));
+                if (!comboBoxCat.Items.Contains(gorevCat))
+                {
+                    comboBoxCat.Items.Add(gorevCat);
+
+                }
             }
             reader.Close();
-            comboBoxKategoriler.SelectedIndex = 0; //İlk kategori otomatik olarak seçilir.
+
+            if(comboBoxCat.Items.Count > 0)
+            {
+                comboBoxCat.SelectedIndex = 0;
+            }
         }
 
         //İstatistikleri günceller.
@@ -119,18 +125,40 @@ namespace CalismaTakibi
         // Combo box'tan item seçildikten sonra görevle alakalı değerler atanır.
         private void comboBoxKategoriler_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(comboBoxKategoriler.SelectedItem is Gorevler selectedGorev)
+            if(comboBoxCal.SelectedItem is Gorevler selectedGorev)
             {
                 _gorevID = selectedGorev.GorevID;
                 _gorevCat = selectedGorev.GorevCat;
                 _gorevName = selectedGorev.GorevName;
                 _gorevDiff = selectedGorev.GorevDiff;
                 labelID.Text = Convert.ToString(selectedGorev.GorevID);
-                labelCat.Text =selectedGorev.GorevCat.ToString();
                  carpan = selectedGorev.GorevDiff;
             }
+
         }
-        
+        public void RefreshComboBoxGorevler(string selectedCat)
+        {
+            comboBoxCal.Items.Clear();
+            SqlCommand verileriGetir = new SqlCommand("SELECT gorevID, gorevName, gorevDiff FROM gorevTable WHERE gorevCat = @pCat ORDER BY gorevName", SqlBaglanti.connection);
+            verileriGetir.Parameters.AddWithValue("@pCat", selectedCat);
+            SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+
+            SqlDataReader reader = verileriGetir.ExecuteReader();
+            while (reader.Read())
+            {
+                int gorevID = reader.GetInt32(reader.GetOrdinal("gorevID"));
+                string gorevName = reader.GetString(reader.GetOrdinal("gorevName"));
+                float gorevDiff = float.Parse(reader["gorevDiff"].ToString(), turkishCulture);
+                comboBoxCal.Items.Add(new Gorevler { GorevID = gorevID, GorevCat = selectedCat, GorevName = gorevName, GorevDiff = gorevDiff });
+            }
+            reader.Close();
+
+            if(comboBoxCal.Items.Count > 0)
+            {
+                comboBoxCal.SelectedIndex = 0;
+            }
+        }
+
         // Süre değeri değiştirildikçe puanı hesaplar.
         private void numericUpDown_ValueChanged(object sender, EventArgs e)
         {
@@ -157,6 +185,14 @@ namespace CalismaTakibi
             formEdit.Owner = this;
             formEdit.Show();
             this.Hide();
+        }
+
+        private void comboBoxCat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxCat.SelectedItem is string selectedCat)
+            {
+                RefreshComboBoxGorevler(selectedCat);
+            }
         }
 
         // Tabloya yeni veriler ekler veya günceller.

@@ -29,11 +29,10 @@
         private void InitializeComponent()
         {
             this.dataGridViewYapilanlar = new System.Windows.Forms.DataGridView();
-            this.comboBoxKategoriler = new System.Windows.Forms.ComboBox();
+            this.comboBoxCal = new System.Windows.Forms.ComboBox();
             this.labelID = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.labelCat = new System.Windows.Forms.Label();
             this.lblBaslik = new System.Windows.Forms.Label();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -54,6 +53,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.comboBoxCat = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewYapilanlar)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
@@ -71,14 +71,14 @@
             this.dataGridViewYapilanlar.Size = new System.Drawing.Size(601, 587);
             this.dataGridViewYapilanlar.TabIndex = 0;
             // 
-            // comboBoxKategoriler
+            // comboBoxCal
             // 
-            this.comboBoxKategoriler.FormattingEnabled = true;
-            this.comboBoxKategoriler.Location = new System.Drawing.Point(127, 89);
-            this.comboBoxKategoriler.Name = "comboBoxKategoriler";
-            this.comboBoxKategoriler.Size = new System.Drawing.Size(206, 21);
-            this.comboBoxKategoriler.TabIndex = 1;
-            this.comboBoxKategoriler.SelectedIndexChanged += new System.EventHandler(this.comboBoxKategoriler_SelectedIndexChanged);
+            this.comboBoxCal.FormattingEnabled = true;
+            this.comboBoxCal.Location = new System.Drawing.Point(127, 89);
+            this.comboBoxCal.Name = "comboBoxCal";
+            this.comboBoxCal.Size = new System.Drawing.Size(206, 21);
+            this.comboBoxCal.TabIndex = 1;
+            this.comboBoxCal.SelectedIndexChanged += new System.EventHandler(this.comboBoxKategoriler_SelectedIndexChanged);
             // 
             // labelID
             // 
@@ -93,8 +93,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.comboBoxCat);
             this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.labelCat);
             this.groupBox1.Controls.Add(this.lblBaslik);
             this.groupBox1.Controls.Add(this.buttonAdd);
             this.groupBox1.Controls.Add(this.label5);
@@ -105,7 +105,7 @@
             this.groupBox1.Controls.Add(this.dateTimePicker);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.comboBoxKategoriler);
+            this.groupBox1.Controls.Add(this.comboBoxCal);
             this.groupBox1.Controls.Add(this.labelID);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -122,17 +122,6 @@
             this.button2.Text = "Düzenle";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // labelCat
-            // 
-            this.labelCat.AutoSize = true;
-            this.labelCat.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.labelCat.Location = new System.Drawing.Point(200, 59);
-            this.labelCat.Name = "labelCat";
-            this.labelCat.Size = new System.Drawing.Size(61, 15);
-            this.labelCat.TabIndex = 13;
-            this.labelCat.Text = "Kategori";
-            this.labelCat.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblBaslik
             // 
@@ -349,6 +338,15 @@
             this.label6.TabIndex = 14;
             this.label6.Text = "İSTATİSTİKLER";
             // 
+            // comboBoxCat
+            // 
+            this.comboBoxCat.FormattingEnabled = true;
+            this.comboBoxCat.Location = new System.Drawing.Point(127, 58);
+            this.comboBoxCat.Name = "comboBoxCat";
+            this.comboBoxCat.Size = new System.Drawing.Size(206, 21);
+            this.comboBoxCat.TabIndex = 15;
+            this.comboBoxCat.SelectedIndexChanged += new System.EventHandler(this.comboBoxCat_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -373,7 +371,7 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridViewYapilanlar;
-        private System.Windows.Forms.ComboBox comboBoxKategoriler;
+        private System.Windows.Forms.ComboBox comboBoxCal;
         private System.Windows.Forms.Label labelID;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label2;
@@ -387,7 +385,6 @@
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Label lblBaslik;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label labelCat;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
@@ -398,6 +395,7 @@
         private System.Windows.Forms.Label lblSonucSure;
         private System.Windows.Forms.Button buttonStatUpd;
         private System.Windows.Forms.ProgressBar progressBarStat;
+        private System.Windows.Forms.ComboBox comboBoxCat;
     }
 }
 
