@@ -191,7 +191,28 @@ namespace CalismaTakibi
         {
             if (comboBoxCat.SelectedItem is string selectedCat)
             {
-                RefreshComboBoxGorevler(selectedCat);
+                DateTime selectedTime = dateTimePicker.Value.Date;
+                SqlCommand sonucGuncelle = new SqlCommand("SELECT SUM(CAST(DATEDIFF(MINUTE, '00:00:00', sureY) AS int)) AS ToplamDakika FROM yapilanlarTable WHERE tarihY=@pTarih AND kategoriY = @pCat", SqlBaglanti.connection);
+                SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+                sonucGuncelle.Parameters.AddWithValue("@pTarih", selectedTime);
+                sonucGuncelle.Parameters.AddWithValue("@pCat", comboBoxCat.SelectedItem.ToString());
+
+                SqlDataReader reader = sonucGuncelle.ExecuteReader();
+                if (reader.Read())
+                {
+                    object sureSonuc = reader["ToplamDakika"];
+                    int toplamSure = sureSonuc != DBNull.Value ? (int)sureSonuc : 0;
+                    int saat = toplamSure / 60;
+                    int dakika = toplamSure % 60;
+
+                    lblSonucCatSure.Text = $"{saat}:{dakika}";
+                    reader.Close();
+
+                    RefreshComboBoxGorevler(selectedCat);
+
+                }
+
+
             }
         }
 
@@ -212,42 +233,53 @@ namespace CalismaTakibi
             SqlDataReader reader = kontrolEt.ExecuteReader();
 
             // Eğer id ve tarih değerleri eklenecek veriyle eşleşirse sadece güncelleme yapar.
-            if (reader.Read())
-            {
-                TimeSpan mevcutSure = reader.GetTimeSpan(reader.GetOrdinal("sureY"));
-                string puanString = reader["puanY"].ToString();
-                float mevcutPuan = float.Parse(puanString, turkishCulture);
-                reader.Close();
+            
+            
+                if (reader.Read())
+                {
+                    TimeSpan mevcutSure = reader.GetTimeSpan(reader.GetOrdinal("sureY"));
+                    string puanString = reader["puanY"].ToString();
+                    float mevcutPuan = float.Parse(puanString, turkishCulture);
+                    reader.Close();
 
-                TimeSpan toplamSure = mevcutSure + sureDegeri;
-                float toplamPuan = mevcutPuan + float.Parse(textBoxPuan.Text, turkishCulture);
+                    TimeSpan toplamSure = mevcutSure + sureDegeri;
+                    float toplamPuan = mevcutPuan + float.Parse(textBoxPuan.Text, turkishCulture);
 
-                SqlCommand guncelleKomutu = new SqlCommand("UPDATE yapilanlarTable SET sureY=@pSure, puanY=@pPuan WHERE checkGorevID = @pGorevID AND tarihY = @pTarih", SqlBaglanti.connection);
-                SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+                    SqlCommand guncelleKomutu = new SqlCommand("UPDATE yapilanlarTable SET sureY=@pSure, puanY=@pPuan WHERE checkGorevID = @pGorevID AND tarihY = @pTarih", SqlBaglanti.connection);
+                    SqlBaglanti.CheckConnection(SqlBaglanti.connection);
 
-                guncelleKomutu.Parameters.AddWithValue("@pSure", toplamSure);
-                guncelleKomutu.Parameters.AddWithValue("@pGorevID", _gorevID);
-                guncelleKomutu.Parameters.AddWithValue("@pTarih", selectedTime);
-                guncelleKomutu.Parameters.AddWithValue("@pPuan", toplamPuan);
+                    guncelleKomutu.Parameters.AddWithValue("@pSure", toplamSure);
+                    guncelleKomutu.Parameters.AddWithValue("@pGorevID", _gorevID);
+                    guncelleKomutu.Parameters.AddWithValue("@pTarih", selectedTime);
+                    guncelleKomutu.Parameters.AddWithValue("@pPuan", toplamPuan);
 
-                guncelleKomutu.ExecuteNonQuery();
-            }
-            else
-            {
-                reader.Close();
+                    guncelleKomutu.ExecuteNonQuery();
+                }
+                else
+                {
+                    reader.Close();
 
-                SqlCommand veriEkle = new SqlCommand("INSERT INTO yapilanlarTable (checkGorevID, tarihY, kategoriY, gorevY, sureY, puanY) values(@pGorevID, @pTarih, @pKat, @pGorev, @pSure, @pPuan)", SqlBaglanti.connection);
-                SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+                    SqlCommand veriEkle = new SqlCommand("INSERT INTO yapilanlarTable (checkGorevID, tarihY, kategoriY, gorevY, sureY, puanY) values(@pGorevID, @pTarih, @pKat, @pGorev, @pSure, @pPuan)", SqlBaglanti.connection);
+                    SqlBaglanti.CheckConnection(SqlBaglanti.connection);
 
-                veriEkle.Parameters.AddWithValue("@pGorevID", _gorevID);
-                veriEkle.Parameters.AddWithValue("@pTarih", selectedTime);
-                veriEkle.Parameters.AddWithValue("@pKat", _gorevCat);
-                veriEkle.Parameters.AddWithValue("@pGorev", _gorevName);
-                veriEkle.Parameters.AddWithValue("@pSure", sureDegeri);
-                veriEkle.Parameters.AddWithValue("@pPuan", float.Parse(textBoxPuan.Text, turkishCulture));
+                    veriEkle.Parameters.AddWithValue("@pGorevID", _gorevID);
+                    veriEkle.Parameters.AddWithValue("@pTarih", selectedTime);
+                    veriEkle.Parameters.AddWithValue("@pKat", _gorevCat);
+                    veriEkle.Parameters.AddWithValue("@pGorev", _gorevName);
+                    veriEkle.Parameters.AddWithValue("@pSure", sureDegeri);
+                    veriEkle.Parameters.AddWithValue("@pPuan", float.Parse(textBoxPuan.Text, turkishCulture));
 
-                veriEkle.ExecuteNonQuery();
-            }
+                    veriEkle.ExecuteNonQuery();
+                }
+            
+            
+            
+                // Eğer reader hâlâ açık kalmışsa, burada kapatıyoruz.
+                if (!reader.IsClosed)
+                {
+                    reader.Close();
+                }
+            
             RefreshYapilanlarTable();
             RefreshSonuclar();
 
