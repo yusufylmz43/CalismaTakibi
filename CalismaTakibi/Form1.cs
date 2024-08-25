@@ -43,8 +43,6 @@ namespace CalismaTakibi
             DataTable dt = new DataTable();
             adapter.Fill(dt);
             dataGridViewYapilanlar.DataSource = dt;
-            dataGridViewYapilanlar.AllowUserToResizeRows = false;
-            dataGridViewYapilanlar.AllowUserToResizeColumns = false;
         }
 
         //Combo Box'a, veritabanından çekilen kategorilerle item ekler.
@@ -206,6 +204,7 @@ namespace CalismaTakibi
                     int dakika = toplamSure % 60;
 
                     lblSonucCatSure.Text = $"{saat}:{dakika}";
+                    lblSonucCat.Text = comboBoxCat.SelectedItem.ToString();
                     reader.Close();
 
                     RefreshComboBoxGorevler(selectedCat);
