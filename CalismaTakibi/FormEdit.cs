@@ -32,7 +32,11 @@ namespace CalismaTakibi
 
         private void FormEdit_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this.Owner.Show();
+            if(this.Owner is Form1 mainForm)
+            {
+                mainForm.Show();
+                mainForm.RefreshYapilanlarTable();
+            }
         }
         public void RefreshGorevTable()
         {
@@ -64,6 +68,7 @@ namespace CalismaTakibi
             {
                 buttonAdd.Visible = true;
                 buttonSil.Visible = false;
+                buttonEdit.Visible = false;
                 tBoxCat.ReadOnly = false;
                 tBoxName.ReadOnly = false;
                 tBoxDiff.ReadOnly = false;
@@ -72,42 +77,103 @@ namespace CalismaTakibi
             {
                 buttonAdd.Visible = false;
                 buttonSil.Visible = true;
+                buttonEdit.Visible = false;
                 tBoxCat.ReadOnly = true;
                 tBoxName.ReadOnly = true;
                 tBoxDiff.ReadOnly = true;
+            }
+            else if (radioButtonEdit.Checked)
+            {
+                buttonAdd.Visible = false;
+                buttonSil.Visible = false;
+                buttonEdit.Visible = true;
+                tBoxCat.ReadOnly = false;
+                tBoxName.ReadOnly = false;
+                tBoxDiff.ReadOnly = false;
             }
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            SqlCommand setIdOn = new SqlCommand("SET IDENTITY_INSERT gorevTable ON;", SqlBaglanti.connection);
-            SqlBaglanti.CheckConnection(SqlBaglanti.connection);
-            setIdOn.ExecuteNonQuery();
+            DialogResult result = MessageBox.Show(
+                "Bu işlemi onaylıyor musunuz?",
+                "Onay",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
 
-            SqlCommand command = new SqlCommand("INSERT INTO gorevTable (gorevID, gorevCat, gorevName, gorevDiff) VALUES(@pID, @pCat, @pName, @pDiff);", SqlBaglanti.connection);
+            if (result == DialogResult.Yes)
+            {
+                SqlCommand setIdOn = new SqlCommand("SET IDENTITY_INSERT gorevTable ON;", SqlBaglanti.connection);
+                SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+                setIdOn.ExecuteNonQuery();
 
-            command.Parameters.AddWithValue("@pID", Convert.ToInt16(tBoxID.Text));
-            command.Parameters.AddWithValue("@pCat", tBoxCat.Text);
-            command.Parameters.AddWithValue("@pName", tBoxName.Text);
-            command.Parameters.AddWithValue("@pDiff", Convert.ToDouble(tBoxDiff.Text, turkishCulture));
+                SqlCommand command = new SqlCommand("INSERT INTO gorevTable (gorevID, gorevCat, gorevName, gorevDiff) VALUES(@pID, @pCat, @pName, @pDiff);", SqlBaglanti.connection);
 
-            command.ExecuteNonQuery();
+                command.Parameters.AddWithValue("@pID", Convert.ToInt16(tBoxID.Text));
+                command.Parameters.AddWithValue("@pCat", tBoxCat.Text);
+                command.Parameters.AddWithValue("@pName", tBoxName.Text);
+                command.Parameters.AddWithValue("@pDiff", Convert.ToDouble(tBoxDiff.Text, turkishCulture));
 
-            SqlCommand setIdOff = new SqlCommand("SET IDENTITY_INSERT gorevTable OFF;", SqlBaglanti.connection);
-            setIdOff.ExecuteNonQuery();
+                command.ExecuteNonQuery();
 
-            RefreshGorevTable();
+                SqlCommand setIdOff = new SqlCommand("SET IDENTITY_INSERT gorevTable OFF;", SqlBaglanti.connection);
+                setIdOff.ExecuteNonQuery();
+
+                RefreshGorevTable();
+            }
+            else
+            {
+                MessageBox.Show("İşlem İptal Edildi");
+            }
         }
 
         private void buttonSil_Click(object sender, EventArgs e)
         {
-            SqlCommand command = new SqlCommand("DELETE FROM gorevTable WHERE gorevID = @pID", SqlBaglanti.connection);
-            SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+            DialogResult result = MessageBox.Show(
+                "Bu işlemi onaylıyor musunuz?",
+                "Onay",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
 
-            command.Parameters.AddWithValue("@pID", Convert.ToInt16(tBoxID.Text));
-            command.ExecuteNonQuery();
+            if (result == DialogResult.Yes)
+            {
+                SqlCommand command = new SqlCommand("DELETE FROM gorevTable WHERE gorevID = @pID", SqlBaglanti.connection);
+                SqlBaglanti.CheckConnection(SqlBaglanti.connection);
 
-            RefreshGorevTable();
+                command.Parameters.AddWithValue("@pID", Convert.ToInt16(tBoxID.Text));
+                command.ExecuteNonQuery();
+
+                RefreshGorevTable();
+            }
+            else
+            {
+                MessageBox.Show("İşlem İptal Edildi");
+            }
+        }
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "Bu işlemi onaylıyor musunuz?",
+                "Onay",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                SqlCommand command = new SqlCommand("UPDATE gorevTable SET gorevCat = @pCat, gorevName = @pGorev, gorevDiff = @pDiff WHERE gorevID = @pID", SqlBaglanti.connection);
+                SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+                command.Parameters.AddWithValue("@pCat",tBoxCat.Text);
+                command.Parameters.AddWithValue("@pGorev", tBoxName.Text);
+                command.Parameters.AddWithValue("@pDiff", decimal.Parse(tBoxDiff.Text, turkishCulture));
+                command.Parameters.AddWithValue("@pID", Convert.ToInt16(tBoxID.Text));
+                command.ExecuteNonQuery();
+
+                RefreshGorevTable();
+            }
+            else
+            {
+                MessageBox.Show("İşlem İptal Edildi");
+            }
         }
 
         private void dataGridViewYap_SelectionChanged(object sender, EventArgs e)
