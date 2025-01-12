@@ -26,6 +26,7 @@ namespace CalismaTakibi
         {
             InitializeComponent();
             RefreshYapilanlarTable();
+            RefreshLogKaydiTable();
             RefreshComboBoxCat_Cal();
             RefreshSonuclar();
         }
@@ -43,6 +44,26 @@ namespace CalismaTakibi
             DataTable dt = new DataTable();
             adapter.Fill(dt);
             dataGridViewYapilanlar.DataSource = dt;
+            dataGridViewYapilanlar.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewYapilanlar.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewYapilanlar.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+        }
+
+        public void RefreshLogKaydiTable()
+        {
+            SqlCommand verileriGetir = new SqlCommand("SELECT logID as ID, actionType as İşlem, timeStamp as Tarih, description as Açıklama FROM logKaydi", SqlBaglanti.connection);
+            SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+
+            SqlDataAdapter adapter = new SqlDataAdapter(verileriGetir);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            dataGridViewLog.DataSource = dt;
+            dataGridViewLog.Columns[dataGridViewLog.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewLog.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewLog.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewLog.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
         }
 
         //Combo Box'a, veritabanından çekilen kategorilerle item ekler.

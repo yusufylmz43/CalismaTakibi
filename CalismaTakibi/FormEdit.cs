@@ -36,6 +36,7 @@ namespace CalismaTakibi
             {
                 mainForm.Show();
                 mainForm.RefreshYapilanlarTable();
+                mainForm.RefreshLogKaydiTable();
             }
         }
         public void RefreshGorevTable()
@@ -167,6 +168,14 @@ namespace CalismaTakibi
                 command.Parameters.AddWithValue("@pDiff", decimal.Parse(tBoxDiff.Text, turkishCulture));
                 command.Parameters.AddWithValue("@pID", Convert.ToInt16(tBoxID.Text));
                 command.ExecuteNonQuery();
+
+                //TODO: Sadece yapılan değişikliğe göre açıklama eklenecek şekilde düzenle
+                SqlCommand logCommand = new SqlCommand("INSERT INTO logKaydi (actionType, timeStamp, description) VALUES(@pAction, @pTime, @pDes)", SqlBaglanti.connection);
+                SqlBaglanti.CheckConnection(SqlBaglanti.connection);
+                logCommand.Parameters.AddWithValue("@pAction", "Edit");
+                logCommand.Parameters.AddWithValue("@pTime", System.DateTime.Today);
+                logCommand.Parameters.AddWithValue("@pDes", $"{tBoxID.Text} ID'li görevde değişiklik yapıldı. Kategori: {tBoxCat.Text} Görev: {tBoxName.Text} Puan: {tBoxDiff.Text}");
+                logCommand.ExecuteNonQuery();
 
                 RefreshGorevTable();
             }
