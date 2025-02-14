@@ -115,7 +115,16 @@ namespace CalismaTakibi
 
                 lblSonucSure.Text = $"{saat}:{dakika}";
                 lblSonucPuan.Text = toplamPuan.ToString("F2", turkishCulture);
-                progressBarStat.Value = Convert.ToInt32(toplamPuan);
+
+                int topPuanInt = Convert.ToInt32(toplamPuan);
+                if (topPuanInt > 130)
+                {
+                    progressBarStat.Value = 130;
+                }
+                else
+                {
+                    progressBarStat.Value = topPuanInt;
+                }
 
                 if (toplamPuan < 50)
                 {
