@@ -361,3 +361,19 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Kullanıcı ayarları ve IDE özel dosyaları
+Properties/
+AssemblyInfo.cs
+
+# Otomatik oluşturulan dosyalar (Visual Studio GUI Designer)
+*.Designer.cs
+*.resx
+
+# Derlenmiş Dosyalar ve Geçici Klasörler
+bin/
+obj/
+.vs/
+
+# Windows Özel Dosyaları
+Thumbs.db
